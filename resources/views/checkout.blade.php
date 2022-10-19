@@ -19,7 +19,7 @@
                 <div class="row">
                     <div class="col-lg-5 col-12">
                         <div class="item-bootcamp">
-                            <img src="/public/assets/images/item_bootcamp.png" alt="" class="cover">
+                            <img src="{{asset('images/item_bootcamp.png')}}" alt="" class="cover">
                             <h1 class="package">
                                 GILA BELAJAR
                             </h1>
@@ -61,7 +61,7 @@
                             </div>
                             <button type="submit" class="w-100 btn btn-primary">Pay Now</button>
                             <p class="text-center subheader mt-4">
-                                <img src="/public/assets/images/ic_secure.svg" alt=""> Your payment is secure and encrypted.
+                                <img src="{{asset('images/ic_secure.svg')}}" alt=""> Your payment is secure and encrypted.
                             </p>
                         </form>
                     </div>
@@ -70,6 +70,7 @@
         </div>
     </div>
 </section>
+
 <head>
     <link rel="stylesheet" href="style.css">
 </head>

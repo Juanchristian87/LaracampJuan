@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,3 +29,4 @@ Route::get('checkout', function () {
 Route::get('success-checkout', function () {
     return view('success_checkout');
 })->name('success-checkout');
+
