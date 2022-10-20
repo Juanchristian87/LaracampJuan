@@ -70,8 +70,4 @@
         </div>
     </div>
 </section>
-
-<head>
-    <link rel="stylesheet" href="style.css">
-</head>
 @endsection
