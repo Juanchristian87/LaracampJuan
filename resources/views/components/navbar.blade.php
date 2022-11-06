@@ -21,6 +21,29 @@
                     <a class="nav-link" href="#">Business</a>
                 </li>
             </ul>
+            @auth
+            <div class="d-flex user-logged nav-item dropdown no-arrow">
+                <!--berikut yang ditambahkan merupakan class dari bootstrap-->
+                <a href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    Halo, {{Auth::user()->name}}!
+                    <!--ini untuk menamppilkan username kita-->
+                    <img src="{{Auth::user()->avatar}}" class="user-photo" alt="">
+                    <!--ini untuk menamppilkan foto avatar kita-->
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="right: 0; left: auto">
+                        <li>
+                            <a href="{{route('dashboard')}}" class="dropdown-item">My Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Sign Out</a>
+                            <form id="logout-form" action="{{route('logout')}}" method="post" style="display: none">
+                                <!--berikut yang ditambahkan merupakan class dari bootstrap-->
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            </form>
+                        </li>
+                    </ul>
+                </a>
+            </div>
+            @else
             <div class="d-flex">
                 <a href="{{route('login')}}" class="btn btn-master btn-secondary me-3">
                     <!--jadi disini kita menggunakan route name agar pada saat di klik, kita dapat mengakses halaman login secara langsung sedangkan kalau kita pakai \login akan kurang efektif karena apabila ganti url maka laman tidak bisa dibuka-->
@@ -30,6 +53,7 @@
                     Sign Up
                 </a>
             </div>
+            @endauth
         </div>
     </div>
 </nav>
