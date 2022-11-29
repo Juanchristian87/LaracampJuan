@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function ()
 
     //user dashboard
     Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('dashboard/checkout/invoice/{checkout}', [CheckoutController::class, 'invoice'])->name('user.checkout.invoice');
 });//middleware disini adalah apabila belum login, maka user tidak dapat mengakses halamna tertentu
 
 // Route::get('/dashboard', function () {
