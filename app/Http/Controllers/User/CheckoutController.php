@@ -121,8 +121,8 @@ class CheckoutController extends Controller
         return view ('checkout.success');
     }
 
-    public function invoice(Checkout $checkout)
-    {
-        return $checkout;
-    }//untuk return data checkout mengenai program apa yang dibeli
+    // public function invoice(Checkout $checkout)
+    // {
+    //     return $checkout;
+    // }//untuk return data checkout mengenai program apa yang dibeli
 }
