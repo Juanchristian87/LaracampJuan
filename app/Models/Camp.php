@@ -25,3 +25,4 @@ class Camp extends Model
         // jadi disini mengambil id yang dipilih dan ambil id yang digunakan pada saat login
     }
 }
+
