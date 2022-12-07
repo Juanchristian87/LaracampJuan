@@ -48,7 +48,7 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Occupation</label>
-                                <input name='occupation' type="text" class="form-control {{ $errors -> has ('name') ? 'is-invalid' : ''}}" value="{{old('occupation') ?: Auth::user()->occupation}}" required/>
+                                <input name='occupation' type="text" class="form-control {{ $errors -> has ('occupation') ? 'is-invalid' : ''}}" value="{{old('occupation') ?: Auth::user()->occupation}}" required/>
                                 @if ($errors -> has ('occupation'))
                                     <p class="text-danger">{{ $errors -> first ('occupation') }}</p>
                                 @endif

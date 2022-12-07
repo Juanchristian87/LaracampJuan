@@ -26,8 +26,12 @@
                 <!--berikut yang ditambahkan merupakan class dari bootstrap-->
                 <a href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     Halo, {{Auth::user()->name}}!
+                    @if (Auth::user()->avatar)
                     <!--ini untuk menamppilkan username kita-->
-                    <img src="{{Auth::user()->avatar}}" class="user-photo" alt="">
+                    <img src="{{Auth::user()->avatar}}" class="user-photo" alt="" style="border-radius: 50%">
+                    @else
+                    <img src="https://ui-avatars.com/api/?name=Admin" class="user-photo" alt="" style="border-radius: 50%">
+                    @endif
                     <!--ini untuk menamppilkan foto avatar kita-->
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="right: 0; left: auto">
                         <li>
