@@ -16,9 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // if (env(key: 'APP_ENV') !== 'local') {
-        //     URL::forceScheme(scheme: 'http');
-        // }
+        if (env(key: 'APP_ENV') !== 'local') {
+            URL::forceScheme(scheme: 'http');
+        }
         //check that app is local
         // if ($this->app=='local') {
         //     //if local register your services you require for development

@@ -19,10 +19,10 @@ class CheckoutController extends Controller
     //mendefinisikan variabel midtrans
     public function __construct()
     {
-        Midtrans\Config::$serverkey = env('MIDTRANS_SERVERKEY');
+        Midtrans\Config::$serverKey = env('MIDTRANS_SERVERKEY');
         Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
         Midtrans\Config::$isSanitized = env('MIDTRANS_IS_SANITIZED');
-        Midtrans\Config::$is3DS = env('MIDTRANS_IS_3DS');
+        Midtrans\Config::$is3ds = env('MIDTRANS_IS_3DS');
     }
     /**
      * Display a listing of the resource.
@@ -71,6 +71,8 @@ class CheckoutController extends Controller
         $user->email = $data['email'];
         $user->name = $data['name'];
         $user->occupation = $data['occupation'];
+        $user->phone = $data['phone'];
+        $user->address = $data['address'];
         $user->save();
 
         //Create Checkout
@@ -142,24 +144,24 @@ class CheckoutController extends Controller
         $checkout->midtrans_booking_code = $orderId;
 
         $transaction_details = [
-            'order-id' => $orderId,
-            'gross_amount' => $price,
+            'order_id' => $orderId,
+            'gross_amount' => $price
         ];
 
         $item_details[] = [
             'id' => $orderId,
             'price' => $price,
-            'quantity'=> 1,
-            'name' => 'Payment for {$checkout->Camp->title} Camp',
+            'quantity' => 1,
+            'name' => "Payment for {$checkout->Camp->title} Camp"
         ];
 
         $userData = [
-            "first_name" => $checkout -> User-> name,
+            "first_name" => $checkout->User->name,
             "last_name" => "",
-            "aaddress" => $checkout->User->address,
+            "address" => $checkout->User->address,
             "city" => "",
             "postal_code" => "",
-            "photo" => $checkout->User->phone,
+            "phone" => $checkout->User->phone,
             "country_code" => "IDN",
         ];
 
@@ -179,10 +181,11 @@ class CheckoutController extends Controller
             'item_details' => $item_details,
         ];
 
+
         try{
             //Get Snap Payment Page URL
-            $paymentUrl = \Midtrans\Snap::createTransaction($params)->redirect_url;
-            //kalau ddapat update tabel checkout yang midtrans URLnya
+            $paymentUrl = \Midtrans\Snap::createTransaction($midtrans_params)->redirect_url;
+            //kalau dapat update tabel checkout yang midtrans URLnya
             $checkout->midtrans_url = $paymentUrl;
             $checkout->save();
 
@@ -195,12 +198,13 @@ class CheckoutController extends Controller
 
     public function midtransCallback(Request $request)
     {
-        $notif = new Midtrans\Notification();
+        //notification untuk route get dan post
+        $notif = $request->method() == 'POST' ? new Midtrans\Notification() : Midtrans\Transaction::status($request->order_id);
 
         $transaction_status = $notif->transaction_status;
         $fraud = $notif->fraud_status;
 
-        $checkout_id = explode('-', $notif->order_id)[0];/*ini untuk mengambil checkout_id*/ 
+        $checkout_id = explode('-', $notif->order_id)[0];/*ini untuk mengambil checkout_id*/
         $checkout = Checkout::find($checkout_id);/*Mengambil datanya dari database*/
 
         if ($transaction_status == 'capture') {
