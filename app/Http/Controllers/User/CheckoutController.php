@@ -19,7 +19,7 @@ class CheckoutController extends Controller
     //mendefinisikan variabel midtrans
     public function __construct()
     {
-        Midtrans\Config::$serverKey = env('MIDTRANS_SERVERKEY');
+        Midtrans\Config::$serverKey = "SB-Mid-server-YzQPLr_9UNT2GAgu9WUrAjp7";
         Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
         Midtrans\Config::$isSanitized = env('MIDTRANS_IS_SANITIZED');
         Midtrans\Config::$is3ds = env('MIDTRANS_IS_3DS');
@@ -241,8 +241,8 @@ class CheckoutController extends Controller
         return view('checkout/success');
     }
 
-    // public function invoice(Checkout $checkout)
-    // {
-    //     return $checkout;
-    // }//untuk return data checkout mengenai program apa yang dibeli
+    public function invoice(Checkout $checkout)
+    {
+        return $checkout;
+    }//untuk return data checkout mengenai program apa yang dibeli
 }

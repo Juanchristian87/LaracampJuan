@@ -37,7 +37,7 @@
                                     <strong>{{$checkout->Camp->status}}</strong>
                                 </td>
                                 <td>
-                                    @if ($checkout->payment_status == 'waiting')
+                                    @if ($checkout->payment_status == "waiting")
                                         <a href="{{$checkout->midtrans_url}}" class="btn btn-primary">Pay Here</a>
                                     @endif
                                 </td>
