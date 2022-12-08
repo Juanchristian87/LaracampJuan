@@ -25,6 +25,8 @@ class User extends Authenticatable
         'password',
         'avatar',
         'occupation',
+        'phone',
+        'address',
         'is_admin'
     ];
     /*ini kita lengkapi sesuai dengan isi tabelnya*/

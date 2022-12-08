@@ -7,12 +7,23 @@ use App\Models\Checkout;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Checkout\Store;
 use App\Models\Camp;
-use Auth;
-use Mail;
 use App\Mail\Checkout\AfterCheckout;
+use Auth;
+use Exception;
+use Mail;
+use Str;
+use Midtrans;
 
 class CheckoutController extends Controller
 {
+    //mendefinisikan variabel midtrans
+    public function __construct()
+    {
+        Midtrans\Config::$serverKey = "SB-Mid-server-YzQPLr_9UNT2GAgu9WUrAjp7";
+        Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION');
+        Midtrans\Config::$isSanitized = env('MIDTRANS_IS_SANITIZED');
+        Midtrans\Config::$is3ds = env('MIDTRANS_IS_3DS');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -60,10 +71,14 @@ class CheckoutController extends Controller
         $user->email = $data['email'];
         $user->name = $data['name'];
         $user->occupation = $data['occupation'];
+        $user->phone = $data['phone'];
+        $user->address = $data['address'];
         $user->save();
 
         //Create Checkout
         $checkout = Checkout::create($data);
+        //memanggil function baru 
+        $this->getSnapRedirect($checkout);
 
         //sending Mail
         Mail::to(Auth::user()->email)->send(new AfterCheckout($checkout));//apabila user sign out maka akan dikirimkan email ke email user tersebut
@@ -121,8 +136,113 @@ class CheckoutController extends Controller
         return view ('checkout.success');
     }
 
-    // public function invoice(Checkout $checkout)
-    // {
-    //     return $checkout;
-    // }//untuk return data checkout mengenai program apa yang dibeli
+    public function getSnapRedirect(Checkout $checkout)
+    {
+        $orderId = $checkout->id.'-'.Str::random(5);/*untuk meregenerate order_id yang unique*/
+        $price = $checkout->Camp->price*1000;/* dikali 1000 karena harga di database masih dalam ratusan*/
+
+        $checkout->midtrans_booking_code = $orderId;
+
+        $transaction_details = [
+            'order_id' => $orderId,
+            'gross_amount' => $price
+        ];
+
+        $item_details[] = [
+            'id' => $orderId,
+            'price' => $price,
+            'quantity' => 1,
+            'name' => "Payment for {$checkout->Camp->title} Camp"
+        ];
+
+        $userData = [
+            "first_name" => $checkout->User->name,
+            "last_name" => "",
+            "address" => $checkout->User->address,
+            "city" => "",
+            "postal_code" => "",
+            "phone" => $checkout->User->phone,
+            "country_code" => "IDN",
+        ];
+
+        $customer_details = [
+            "first_name" => $checkout->User->name,
+            "last_name" => "",
+            "email" => $checkout->User->email,
+            "phone" => $checkout->User->phone,
+            "billing_address" => $userData,
+            "shipping_address" => $userData,
+        ];
+
+        //parameter
+        $midtrans_params = [
+            'transaction_details' => $transaction_details,
+            'customer_details' => $customer_details,
+            'item_details' => $item_details,
+        ];
+
+
+        try{
+            //Get Snap Payment Page URL
+            $paymentUrl = \Midtrans\Snap::createTransaction($midtrans_params)->redirect_url;
+            //kalau dapat update tabel checkout yang midtrans URLnya
+            $checkout->midtrans_url = $paymentUrl;
+            $checkout->save();
+
+            return $paymentUrl;
+        } catch (Exception $e) {
+            return false;
+        }
+
+    }
+
+    public function midtransCallback(Request $request)
+    {
+        //notification untuk route get dan post
+        $notif = $request->method() == 'POST' ? new Midtrans\Notification() : Midtrans\Transaction::status($request->order_id);
+
+        $transaction_status = $notif->transaction_status;
+        $fraud = $notif->fraud_status;
+
+        $checkout_id = explode('-', $notif->order_id)[0];/*ini untuk mengambil checkout_id*/
+        $checkout = Checkout::find($checkout_id);/*Mengambil datanya dari database*/
+
+        if ($transaction_status == 'capture') {
+            if ($fraud == 'challenge') {
+                // TODO Set payment status in merchant's database to 'challenge'
+                $checkout->payment_status = 'pending';
+            } else if ($fraud == 'accept') {
+                // TODO Set payment status in merchant's database to 'success'
+                $checkout->payment_status = 'paid';
+            }
+        } else if ($transaction_status == 'cancel') {
+            if ($fraud == 'challenge') {
+                // TODO Set payment status in merchant's database to 'failure'
+                $checkout->payment_status = 'failed';
+            } else if ($fraud == 'accept') {
+                // TODO Set payment status in merchant's database to 'failure'
+                $checkout->payment_status = 'failed';
+            }
+        } else if ($transaction_status == 'deny') {
+            // TODO Set payment status in merchant's database to 'failure'
+            $checkout->payment_status = 'failed';
+        } else if ($transaction_status == 'settlement') {
+            // TODO set payment status in merchant's database to 'Settlement'
+            $checkout->payment_status = 'paid';
+        } else if ($transaction_status == 'pending') {
+            // TODO set payment status in merchant's database to 'Pending'
+            $checkout->payment_status = 'pending';
+        } else if ($transaction_status == 'expire') {
+            // TODO set payment status in merchant's database to 'expire'
+            $checkout->payment_status = 'failed';
+        }
+
+        $checkout->save();
+        return view('checkout/success');
+    }
+
+    public function invoice(Checkout $checkout)
+    {
+        return $checkout;
+    }//untuk return data checkout mengenai program apa yang dibeli
 }
