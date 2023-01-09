@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends ('layouts.app')
 
 @section('content')
 <section class="dashboard my-5">
@@ -14,49 +14,52 @@
                 </div>
             </div>
             <div class="row my-5">
-                @include('components.alert')
+                @include("components.alert")
                 <table class="table">
                     <tbody>
-                        @forelse ($checkouts as $checkout)
-                            <tr class="align-middle">
-                                <td width="18%">
-                                    <img src="{{asset('images/item_bootcamp.png') }}" height="120" alt="">
+                    @forelse ($checkouts as $checkout)
+                    <tr class="align-middle">
+                            <td width="18%">
+                                <img src="{{asset('images/item_bootcamp.png')}}" height="120" alt="">
+                            </td>
+                            <td>
+                                <p class="mb-2">
+                                    <strong>{{$checkout->Camp->title}}</strong>
+                                </p>
+                                <p>
+                                    {{$checkout->created_at->format("M d, Y")}}
+                                </p>
+                            </td>
+                            <td>
+                                <strong>
+                                Rp. {{$checkout->total}}
+                                @if($checkout->discount_id)
+                                    <span class="badge bg-success">Disc {{$checkout->discount_percentage}}%</span>                                    
+                                @endif
+                                </strong>
+                            </td>
+                            <td>
+                            <strong>{{$checkout->payment_status}}</strong>
                                 </td>
                                 <td>
-                                    <p class="mb-2">
-                                        <strong>{{$checkout->Camp->title}}</strong>
-                                    </p>
-                                    <p>
-                                        {{$checkout->created_at->format('M d, Y')}}
-                                    </p>
-                                </td>
-                                <td>
-                                    <strong>
-                                        Rp. {{$checkout->total}}
-                                        @if ($checkout->discount_id)
-                                            <span class="badge bg-success">Disc {{$checkout->discount_percentage}}%</span>
-                                        @endif
-                                    </strong>
-                                </td>
-                                <td>
-                                    <strong>{{$checkout->Camp->status}}</strong>
-                                </td>
-                                <td>
-                                    @if ($checkout->payment_status == "waiting")
+                                    @if ($checkout->payment_status == 'waiting')
                                         <a href="{{$checkout->midtrans_url}}" class="btn btn-primary">Pay Here</a>
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="https://wa.me/087872611668?text=Hi, saya ingin bertanya tentang kelas {{$checkout->Camp->title}}" class="btn btn-primary">
-                                        Contact Support
-                                    </a>
-                                </td>
-                            </tr>
+
+                            </td>
+                            <td>
+                                <a href="https://wa.me/081219787811?text= Hai, saya ingin bertanya tentang kelas {{$checkout->Camp->title}}" class="btn btn-primary">
+                                    Contact Support
+                                </a>
+                            </td>
+                        </tr>
                         @empty
                             <tr>
                                 <td colspan="5">
-                                    No Camp Registered
-                                </td>
+                                    <h3>No Camp Registered</h3>
+                                </td>   
                             </tr>
                         @endforelse
                     </tbody>

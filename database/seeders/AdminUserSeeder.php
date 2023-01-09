@@ -18,7 +18,7 @@ class AdminUserSeeder extends Seeder
         User::create(
             [
                 'name' => 'admin',
-                'email' => 'admin@laracamp.com',
+                'email' => 'admin@juan.com',
                 'email_verified_at' => date ('Y-m-d H:i:s', time()),
                 /*Y = year, m = month, d = tanggal,H = hour, i= minutes, s = second*/
                 'password' => \bcrypt('password'), /*ini untuk enkripsi*/

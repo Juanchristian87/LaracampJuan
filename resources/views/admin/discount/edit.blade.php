@@ -1,6 +1,6 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="container">
     <div class="container">
         <div class="row">
             <div class="col-8 offset-2">
@@ -9,10 +9,9 @@
                         Update discount: {{$discount->name}}
                     </div>
                     <div class="card-body">
-                        <form action="{{route('admin.discount.update', $discount->id)}}" method="post">
+                       <form action="{{route('admin.discount.update', $discount->id)}}" method="post">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="id" value="{{$discount->id}}">
                             <input type="hidden" name="id" value="{{$discount->id}}">
                             <div class="form-group mb-4">
                                 <label for="" class="form-label">Name</label>
@@ -51,4 +50,4 @@
             </div>
         </div>
     </div>
-@endsection
+@endsection 

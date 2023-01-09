@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Camp; /*ini untuk import model kita*/
-
-
+use App\models\Camp;
 
 class CampTableSeeder extends Seeder
 {
@@ -17,28 +15,25 @@ class CampTableSeeder extends Seeder
      */
     public function run()
     {
-        $camps = 
-        [
+        $camps = [
             [
                 'title' => 'Gila Belajar',
                 'slug' => 'gila-belajar',
-                'price' => 280,
-                'created_at' => date('Y-m-d H:i:s', time()),
+                'price' => 200,
+                'created_at' => date('Y-m-d H:i:s',time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'title' => 'Baru Mulai',
-                'slug' => 'baru-mulai',
-                'price' => 140,
-                'created_at' => date('Y-m-d H:i:s', time()),
+                'title' => 'Gila Belajar',
+                'slug' => 'gila-belajar',
+                'price' => 200,
+                'created_at' => date('Y-m-d H:i:s',time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
-            ],
+            ]
         ];
-        // foreach ($camps as $key => $camp)
-        // {
-        //     Camp::create($camp);
-        // }
-        //atau
-        Camp::insert($camps);/*ini untuk memasukkann data ke tabel camps*/
+
+        foreach($camps as $key => $camps){
+            Camp::create($camps);
+        }
     }
 }

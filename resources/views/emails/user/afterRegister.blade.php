@@ -1,7 +1,7 @@
 @component('mail::message')
 # Welcome!
 
-Hi {{$user->name}}
+HI {{$user->name}}
 <br>
 Welcome to Laracamp, your account has been created successfully. Now you can choose your best match camp!
 
@@ -11,4 +11,4 @@ Login Here
 
 Thanks,<br>
 {{ config('app.name') }}
-@endcomponent
+@endcomponent   
